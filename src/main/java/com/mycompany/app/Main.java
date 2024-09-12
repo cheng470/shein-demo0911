@@ -66,13 +66,14 @@ public class Main {
             System.out.println("第一页找到" + productCards.size() + "个商品");
             productCards.forEach((productCard) -> {
                 WebElement nameLink = productCard.findElement(By.className("goods-title-link"));
-                if (!record.contains(nameLink.getText())) {
+                String goodsTitle = nameLink.getText().replace(",", "_");
+                if (!record.contains(goodsTitle)) {
                     WebElement priceSpan = productCard.findElement(By.className("product-item__camecase-wrap"));
                     WebElement imgTag = productCard.findElement(By.tagName("img"));
-                    String goodsInOneLine = nameLink.getText() + "," + priceSpan.getText() + "," + imgTag.getDomProperty("src");
+                    String goodsInOneLine = goodsTitle + "," + priceSpan.getText() + "," + imgTag.getDomProperty("src");
                     System.out.println(goodsInOneLine);
                     sb.append(goodsInOneLine).append("\n");
-                    record.add(nameLink.getText());
+                    record.add(goodsTitle);
                 }
             });
         }
