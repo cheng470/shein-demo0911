@@ -12,5 +12,5 @@ mvn compile
 mvn package
 
 # 运行
-jar ./target/shein-demo0911.jar
+java -jar ./target/shein-demo0911.jar
 ```
