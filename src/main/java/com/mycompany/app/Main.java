@@ -1,13 +1,11 @@
 package com.mycompany.app;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -63,16 +61,27 @@ public class Main {
 
         // 由于页面的商品信息是异步加载的，需要多跑几次
         for (int i = 0; i < 3; i++) {
+            // 按下键盘 PageDown 键
+            new Actions(driver)
+                    .sendKeys(Keys.PAGE_DOWN)
+                    .sendKeys(Keys.PAGE_DOWN)
+                    .sendKeys(Keys.PAGE_DOWN)
+                    .sendKeys(Keys.PAGE_DOWN)
+                    .sendKeys(Keys.PAGE_DOWN)
+                    .perform();
+
             wait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-card")));
             List<WebElement> productCards = driver.findElements(By.className("product-card"));
             System.out.println("第一页找到" + productCards.size() + "个商品");
             productCards.forEach((productCard) -> {
                 WebElement nameLink = productCard.findElement(By.className("goods-title-link"));
+                WebElement priceSpan = productCard.findElement(By.className("product-item__camecase-wrap"));
+                WebElement imgTag = productCard.findElement(By.tagName("img"));
                 String goodsTitle = nameLink.getText().replace(",", "_");
-                if (!record.contains(goodsTitle)) {
-                    WebElement priceSpan = productCard.findElement(By.className("product-item__camecase-wrap"));
-                    WebElement imgTag = productCard.findElement(By.tagName("img"));
-                    String goodsInOneLine = goodsTitle + "," + priceSpan.getText() + "," + imgTag.getDomProperty("src");
+                String goodsPrice = priceSpan.getText();
+                String goodsImage = imgTag.getDomProperty("src");
+                if (!goodsTitle.isEmpty() && !record.contains(goodsTitle) && goodsImage != null && !goodsImage.contains("bg-grey-solid-color")) {
+                    String goodsInOneLine = goodsTitle + "," + goodsPrice + "," + goodsImage;
                     System.out.println(goodsInOneLine);
                     sb.append(goodsInOneLine).append("\n");
                     record.add(goodsTitle);
