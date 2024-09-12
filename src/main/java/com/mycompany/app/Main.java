@@ -60,6 +60,8 @@ public class Main {
         // 读取商品列表
         Set<String> record = new HashSet<>();
         StringBuilder sb = new StringBuilder("标题,价格,图片\n");
+
+        // 由于页面的商品信息是异步加载的，需要多跑几次
         for (int i = 0; i < 3; i++) {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-card")));
             List<WebElement> productCards = driver.findElements(By.className("product-card"));
@@ -92,7 +94,8 @@ public class Main {
         writer2.write(sb.toString());
         writer2.close();
 
-        driver.quit(); // 完成后退出
+        // 完成后全部退出
+        driver.quit();
     }
 
     private static WebDriver getWebDriver(String proxyAddress, int proxyPort) {
